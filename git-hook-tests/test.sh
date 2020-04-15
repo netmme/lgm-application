@@ -1,3 +1,3 @@
 #!/bin/bash
 
-# A simple test
+echo "Ce script ne sert à rien."
