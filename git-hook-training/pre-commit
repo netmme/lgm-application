@@ -19,10 +19,8 @@ do
         status=1
     fi
 
-    # Autre possibilite qui fonctionne aussi avec sh
-    # is_shell=$(file "${file}" | grep shell)
-    # if [ ${is_shell} == "1" ]; then
-    if [[ "${file}" == *.sh ]]; then 
+    is_shell=$(file "${file}" | grep shell)
+    if [[ "${file}" == *.sh || ${is_shell} -eq 1 ]]; then 
         shellcheck "${file}"
         status=$?
     fi
