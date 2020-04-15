@@ -1,53 +1,26 @@
-#!/bin/sh
+echo "It's the captain!"
 
-# An example hook script to verify what is about to be pushed.  Called by "git
-# push" after it has checked the remote status, but before anything has been
-# pushed.  If this script exits with a non-zero status nothing will be pushed.
-#
-# This hook is called with the following parameters:
-#
-# $1 -- Name of the remote to which the push is being done
-# $2 -- URL to which the push is being done
-#
-# If pushing without using a named remote those arguments will be equal.
-#
-# Information about the commits which are being pushed is supplied as lines to
-# the standard input in the form:
-#
-#   <local ref> <local sha1> <remote ref> <remote sha1>
-#
-# This sample shows how to prevent push of commits where the log message starts
-# with "WIP" (work in progress).
+if git rev-parse --verify HEAD >/dev/null 2>&1
+then
+    against=HEAD
+else
+    # Initial commit: diff against an empty tree object
+    against=$(git hash-object -t tree /dev/null)
+fi
 
-remote="$1"
-url="$2"
-
-z40=0000000000000000000000000000000000000000
-
-while read local_ref local_sha remote_ref remote_sha
+status=0
+for file in $(git diff --cached --name-only --diff-filter=A "${against}")
 do
-	if [ "$local_sha" = $z40 ]
-	then
-		# Handle delete
-		:
-	else
-		if [ "$remote_sha" = $z40 ]
-		then
-			# New branch, examine all commits
-			range="$local_sha"
-		else
-			# Update to existing branch, examine new commits
-			range="$remote_sha..$local_sha"
-		fi
-
-		# Check for WIP commit
-		commit=$(git rev-list -n 1 --grep '^fixup' "${range}")
-		if [ -n "${commit}" ]
-		then
-			echo >&2 "Found fixup commit in $local_ref, not pushing. Please merge the fixup."
-			exit 1
-		fi
-	fi
+    echo ${file}
+    if [ $(sed -e '/^ *#/d' -e '/^ *$/d' ${file} | wc -l) -eq 0 ] ; then
+        echo "Adding empty scripts to this repository is forbidden: ${file}"
+        status=1
+    fi
+    is_shell=$(file "${file}" | grep shell)
+    if [ ${is_shell} == "1" ]; then
+        shellcheck "${file}"
+        status=$?
+    fi
 done
 
-exit 0
+exit "${status}"
