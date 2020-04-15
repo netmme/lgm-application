@@ -21,8 +21,9 @@
 
 z40=0000000000000000000000000000000000000000
 
-while read -r local_ref local_sha remote_sha
+while read -r local_ref local_sha remote_ref remote_sha
 do
+	echo "${remote_ref}"
 	if [ "$local_sha" = $z40 ]
 	then
 		# Handle delete
