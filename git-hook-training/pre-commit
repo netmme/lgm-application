@@ -1,0 +1,24 @@
+echo "It's the captain!"
+
+if git rev-parse --verify HEAD >/dev/null 2>&1
+then
+    against=HEAD
+else
+    # Initial commit: diff against an empty tree object
+    against=$(git hash-object -t tree /dev/null)
+fi
+
+status=0
+for file in $(git diff --cached --name-only "${against}")
+do
+    if [ $(sed -e '/^ *#/d' -e '/^ *$/d' ${file} | wc -l) -eq 0 ] ; then
+        echo "Adding empty scripts to this repository is forbidden: ${file}"
+        status=1
+    fi
+    if [[ ${file} == *.sh ]]; then
+        shellcheck "${file}"
+        status=$?
+    fi
+done
+
+exit "${status}"
