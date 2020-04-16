@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# echo "Hello world!"
+echo "Hello world!"
 
 set -euo pipefail
 
@@ -27,9 +27,14 @@ playSound() {
     # On joue ${DIR_SOUNDS}/${1}/${2}/{2}_1.mpr
     # ${1} : catégories du son
     # ${2} : type de son
-    echo "${DIR_SOUNDS}/${1}/${2}/${2}_1.mp3"
+    baseFilename="${2}_"
+    nbFiles="$(find "${DIR_SOUNDS}"/"${1}"/"${2}" -maxdepth 1 | wc -l)"
+    nbFiles="$(expr "${nbFiles}" - 1)"
+    alea="$(grep -m1 -ao "[1-"${nbFiles}"]" /dev/urandom | head -n1)"
+    filename="${DIR_SOUNDS}/${1}/${2}/${baseFilename}${alea}.mp3"
+    echo "${filename}"
 
-    ffplay -nodisp -autoexit "${DIR_SOUNDS}/${1}/${2}/${2}_1.mp3" > /dev/null 2>&1
+    ffplay -nodisp -autoexit "${filename}" > /dev/null 2>&1
 
     exit 0
 }
@@ -55,9 +60,10 @@ listTypes() {
     directories="$(ls "${DIR_SOUNDS}"/"${1}")"
 
     echo "Types disponibles pour la catégories ${1} :"
-    for type in "${directories[@]}"; do
+    for type in ${directories[@]}; do
         local n
-        n="$(find "${DIR_SOUNDS}"/"${1}"/"${type}" -maxdepth 0 | wc -l)"
+        n="$(find "${DIR_SOUNDS}"/"${1}"/"${type}" -maxdepth 1 | wc -l)"
+        n="$(expr "${n}" - 1)"
         echo "- ${type} (${n})"
     done
 
