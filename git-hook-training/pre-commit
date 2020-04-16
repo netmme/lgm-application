@@ -19,8 +19,7 @@ do
         status=1
     fi
 
-    is_shell="$(file "${file}" | grep shell)"
-    if [[ "${file}" == *.sh || ! -z "${is_shell}" ]]; then 
+    if [[ "${file}" == *.sh || "$(file -b --mime-type "${file}")" = "text/x-shellscript" ]]; then 
         shellcheck "${file}"
         status=$?
     fi
