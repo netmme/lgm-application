@@ -19,8 +19,8 @@ do
         status=1
     fi
 
-    is_shell=$(file "${file}" | grep shell)
-    if [[ "${file}" == *.sh || ${is_shell} -eq 1 ]]; then 
+    is_shell="$(file "${file}" | grep shell)"
+    if [[ "${file}" == *.sh || ! -z "${is_shell}" ]]; then 
         shellcheck "${file}"
         status=$?
     fi
