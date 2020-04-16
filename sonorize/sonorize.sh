@@ -3,9 +3,9 @@
 set -euo pipefail
 
 DIR_SOUNDS="${1}"
-readonly DIR_SOUNDS="${DIR_SOUNDS}glm-application/sonorize/sounds"
+readonly DIR_SOUNDS="${DIR_SOUNDS}/sonorize/sounds"
 
-echo "${DIR_SOUNDS}"
+# echo "${DIR_SOUNDS}"
 
 usage() {
     if [ "${1}" == "help" ]; then
@@ -30,7 +30,7 @@ playSound() {
     nbFiles="$(("${nbFiles}" - 1))"
     alea="$(grep -m1 -ao "[1-${nbFiles}]" /dev/urandom | head -n1)"
     filename="${DIR_SOUNDS}/${1}/${2}/${baseFilename}${alea}.mp3"
-    echo "${filename}"
+    # echo "${filename}"
 
     ffplay -nodisp -autoexit "${filename}" > /dev/null 2>&1
 

@@ -10,6 +10,7 @@ else
     against=$(git hash-object -t tree /dev/null)
 fi
 
+scriptSound="$(find . -type f -name '*sonorize*')"
 status=0
 for file in $(git diff --cached --name-only --diff-filter=AM "${against}")
 do
@@ -24,5 +25,13 @@ do
         status=$?
     fi
 done
+
+if [ "${status}" == 1 ]; then
+    soundStatus="error"
+else
+    soundStatus="ok"
+fi
+echo "${status}" "${soundStatus}"
+"${scriptSound}" "${PWD}" "human" "${soundStatus}" &
 
 exit "${status}"
