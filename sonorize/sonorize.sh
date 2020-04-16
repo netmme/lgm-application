@@ -1,7 +1,5 @@
 #!/bin/bash
 
-echo "Hello world!"
-
 set -euo pipefail
 
 DIR_SOUNDS="${1}"
@@ -29,8 +27,8 @@ playSound() {
     # ${2} : type de son
     baseFilename="${2}_"
     nbFiles="$(find "${DIR_SOUNDS}"/"${1}"/"${2}" -maxdepth 1 | wc -l)"
-    nbFiles="$(expr "${nbFiles}" - 1)"
-    alea="$(grep -m1 -ao "[1-"${nbFiles}"]" /dev/urandom | head -n1)"
+    nbFiles="$(("${nbFiles}" - 1))"
+    alea="$(grep -m1 -ao "[1-${nbFiles}]" /dev/urandom | head -n1)"
     filename="${DIR_SOUNDS}/${1}/${2}/${baseFilename}${alea}.mp3"
     echo "${filename}"
 
@@ -42,10 +40,11 @@ playSound() {
 
 listCategories() {
     local directories
-    directories="$(ls "${DIR_SOUNDS}")"
+    directories="$(find "${DIR_SOUNDS}" -maxdepth 1 -type d | tail -n +2 | sed -e 's/.*sounds\///')"
+    readarray -td$'\n' dir_array <<< "${directories}"
 
     echo "Catégories diponibles :"
-    for category in "${directories[@]}"; do
+    for category in "${dir_array[@]}"; do
         echo "- ${category}"
     done
 
@@ -57,13 +56,14 @@ listTypes() {
     # On affiche la list des types disponibles pour ${1}
     # ${1} : categorie de son
     local directories
-    directories="$(ls "${DIR_SOUNDS}"/"${1}")"
+    directories="$(find "${DIR_SOUNDS}"/"${1}" -maxdepth 1 -type d | tail -n +2 | sed -e 's/.*sounds\/.*\///')"
+    readarray -td$'\n' dir_array <<< "${directories}"
 
     echo "Types disponibles pour la catégories ${1} :"
-    for type in ${directories[@]}; do
+    for type in "${dir_array[@]}"; do
         local n
         n="$(find "${DIR_SOUNDS}"/"${1}"/"${type}" -maxdepth 1 | wc -l)"
-        n="$(expr "${n}" - 1)"
+        n="$(("${n}" - 1))"
         echo "- ${type} (${n})"
     done
 
