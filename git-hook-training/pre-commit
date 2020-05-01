@@ -15,7 +15,7 @@ status=0
 for file in $(git diff --cached --name-only --diff-filter=AM "${against}")
 do
     echo "${file}"
-    if [ "$(sed -e '/^ *#/d' -e '/^ *$/d' "${file}" | wc -l)" -eq 0 ] ; then
+    if [[ "${file}" == __init__.py && "$(sed -e '/^ *#/d' -e '/^ *$/d' "${file}" | wc -l)" -eq 0 ]] ; then
         echo "Adding empty scripts to this repository is forbidden: ${file}"
         status=1
     fi
