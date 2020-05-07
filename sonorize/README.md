@@ -26,7 +26,7 @@ pour me simplifier la tâche lors de l'appel du script par un git hook.
 ## Remarques
 
 C'était drôle. Totalement inutile mais une fois combiné au git-hook on obtient un
-niveau de fun jamais atteint à ce jour.
+niveau de fun jamais atteint avant ce jour.
 
 ### Changements effectués
 
@@ -35,3 +35,9 @@ ne donnait pas une distribution uniforme. J'ai préféré utilisé ce cher
 urandom à la place.
 * Le mp3 est fichier plus courrant et newbie donc j'ai préféré ce format
 pour les fichiers audios.
+
+### Chantiers abandonnés
+
+* Il manque pas mal de sons. Il n'y en a qu'un dans human/ok et aucun dans
+les autres catégories que human. C'était inutile vu que ce script n'a en
+soit pas d'application.
