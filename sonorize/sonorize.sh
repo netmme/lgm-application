@@ -9,12 +9,14 @@ readonly DIR_SOUNDS="${DIR_SOUNDS}/sonorize/sounds"
 
 usage() {
     if [ "${1}" == "help" ]; then
-        echo "Usage: sonorize <category> <type> | listCategories | listTypes <category>"
+        echo "Usage: sonorize <path_to_pre-root_dir> <category> <type> | listCategories | listTypes <category>"
         echo "	1. Joue aléatoirement un son pris dans ${DIR_SOUNDS}/<category>/<type>"
         echo "	- <categorie> : Catégorie de sons (human)"
         echo "	- <type> : Type de son (error, warning, ok)"
         echo "	2. Liste les catégories de sons diponibles"
         echo "	3. Liste les types disponibles pour une <category>"
+	echo "NB: l'ajout du path est un peu chelou mais c'était nécessaire pour faire des bruits rigolos"
+	echo "    avec les git hooks."
 
         exit 0
     fi
